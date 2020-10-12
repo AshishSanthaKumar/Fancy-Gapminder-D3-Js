@@ -12,3 +12,15 @@
 	height: 60px;
 	padding: 5px 0px;
 }
+
+.line 
+{
+  fill: none;
+  stroke:black;
+  stroke-width: 2px;
+}
+
+.x-axis line, .x-axis path 
+{
+    stroke: #fff; 
+}
