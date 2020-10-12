@@ -32,9 +32,8 @@ var g = d3.select("#chart")
         countries_region = values[3];
         fertility = values[4];
         console.log(pop);
-
         
     })
-
+    
     });
 
