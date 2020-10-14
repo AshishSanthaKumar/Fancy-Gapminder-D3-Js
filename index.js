@@ -1,10 +1,12 @@
 var pop;
+var x_max;
+var y_max;
+var time =0;
 
 // Setting Dimensions of the canvas
-const margin = {top: 10, right: 20, bottom: 50, left: 50};
-const width = 800 - margin.left - margin.right;
-const height = 470 - margin.top - margin.bottom;
-
+const margin = {top: 20, right: 30, bottom: 80, left: 80};
+const width = 1200 - margin.left - margin.right;
+const height = 800 - margin.top - margin.bottom;
 
 // Creating the Canvas
 var g = d3.select("#chart")
@@ -14,6 +16,8 @@ var g = d3.select("#chart")
     .append("g")
         .attr("transform", "translate(" + margin.left + 
             ", " + margin.top + ")");
+
+var color = d3.scaleOrdinal(d3.schemeTableau10);
 
 
 // data
@@ -41,68 +45,18 @@ function drawGapMinder()
 {   
     g.selectAll("*").remove();
     processing();
-    function processing()
-        {
-            var year=document.getElementById('year').value;
-            var xaxis=document.getElementById('x').value;
-            var yaxis=document.getElementById('y').value;
-            var region=document.getElementById('region').value;
-
-            var xData;
-
-                if(xaxis=="fertility")
-                    xData=fertilitydata;
-                if(xaxis=="child_mortality")
-                    xData=child_mortality;
-                if(xaxis=="life_exp")
-                    xData=life_exp_data;
-                if(xaxis=="population")
-                    xData=pop_data;
-
-            var yData;
-
-                if(yaxis=="fertility")
-                    yData=fertilitydata;
-                if(yaxis=="child_mortality")
-                    yData=child_mortality;
-                if(yaxis=="life_exp")
-                    yData=life_exp_data;
-                if(yaxis=="population")
-                    yData=pop_data;
-
-            var filteredRegionData=countries_region.filter(data =>  data['World bank region']==region || region=='all');
-            dataset=[];
-
-            console.log(dataset);
-
-
-            filteredRegionData.map(function(rd){
-                country=rd['name'];
-                var filteredX=xData.filter(data=> data['country']==rd['name']);
-                var filteredY=yData.filter(data=> data['country']==rd['name']);
-
-                if(filteredX.length >0 && filteredY.length>0 && filteredX[0][year]!='' && filteredX[0][year]!='')
-
-                    dataset.push({
-                        "x":Number(filteredX[0][year]),
-                        "y":Number(filteredY[0][year]),
-                        "region":rd['World bank region'],
-                        "abbr":rd['geo']});
-                    })
     
-        //Calculating the min and max of xData and yData for Scales           
-        let x_min=d3.min(dataset, function(d) { return d.x; })
-        let x_max=d3.max(dataset, function(d) { return d.x; });
-        let y_min=d3.min(dataset, function(d) { return d.y; });
-        let y_max=d3.max(dataset, function(d) { return d.y; });
+    console.log(x_max);
+    console.log(y_max);
         
-        //Scaling the X and Y axis 
-        let yScale = d3.scaleLinear()
+         //Scaling the X and Y axis 
+    let yScale = d3.scaleLinear()
             .domain([0, y_max])
             .range([height - margin.bottom, margin.top]);
-        let xScale = d3.scaleLinear()
+    let xScale = d3.scaleLinear()
             .domain([0, x_max])
             .range([margin.left, width - margin.right]);
+     
         
         //Y Axis label
         g.append("text")
@@ -129,16 +83,16 @@ function drawGapMinder()
             .text("X Axis");
         
         //X Axis
-        const xAxis = d3.axisBottom(xScale).ticks(5);
+        const xAxis = d3.axisBottom(xScale).ticks(10);
             g.append("g")
                   .attr("transform", `translate(0,${height - margin.bottom})`)
                   .style("font-family", "sans-serif")
                   .call(xAxis)
                   .style("stroke","grey")
                   .attr("class","xAxis");  
-        
+
         //Y Axis
-        const yAxis = d3.axisRight(yScale).ticks(5);
+        const yAxis = d3.axisLeft(yScale).ticks(10);
             g.append("g")
                 .attr("transform", `translate(${margin.left},0)`)
                 .style("font-family", "sans-serif")
@@ -148,15 +102,113 @@ function drawGapMinder()
                 .call(g => g.select(".domain"))
                 .attr("class","yAxis"); 
         
+        //Scatter plot
         g.selectAll("dot")
             .data(dataset)
             .enter().append("circle")
-            .attr("r", 4)
+            .attr("class", "dot")
+            .attr("r", 12)
             .attr("cx", function(d) { return xScale(d.x); })
             .attr("cy", function(d) { return yScale(d.y); })
-            .style("opacity", 0.8);
-    
-        }
-    
+            .style("opacity", 0.8)
+            .style("fill", function(d) { return color(d.region); });
 
+        update();
+    
     }
+
+
+    function processing()
+        {
+            var year=document.getElementById('year').value;
+            var xaxis=document.getElementById('x').value;
+            var yaxis=document.getElementById('y').value;
+            var region=document.getElementById('region').value;
+            
+            x_max = null;
+            y_max = null;
+            var xData;
+
+                if(xaxis=="fertility")
+                    xData=fertilitydata;
+                if(xaxis=="child_mortality")
+                    xData=child_mortality;
+                if(xaxis=="life_exp")
+                    xData=life_exp_data;
+                if(xaxis=="population")
+                    xData=pop_data;
+
+            var yData;
+
+                if(yaxis=="fertility")
+                    yData=fertilitydata;
+                if(yaxis=="child_mortality")
+                    yData=child_mortality;
+                if(yaxis=="life_exp")
+                    yData=life_exp_data;
+                if(yaxis=="population")
+                    yData=pop_data;
+
+            var filteredRegionData=countries_region.filter(data =>  data['World bank region']==region || region=='all');
+            dataset=[];
+
+            filteredRegionData.map(function(rd){
+                country=rd['name'];
+                var filteredX=xData.filter(data=> data['country']==rd['name']);
+                var filteredY=yData.filter(data=> data['country']==rd['name']);
+                
+                if(filteredX.length >0 && filteredY.length>0)
+                {
+                    for (var key in filteredX[0]) {
+                        if (filteredX[0].hasOwnProperty(key)) {
+                        if(key!='country' && (x_max==null || Number(filteredX[0][key])>=x_max) )
+                        x_max=Number(filteredX[0][key]);
+                        }
+                    }
+
+                    for (var key in filteredY[0]) {
+                        if (filteredY[0].hasOwnProperty(key)) {
+                        if(key!='country' && (y_max==null || Number(filteredY[0][key])>=y_max) )
+                        y_max=Number(filteredY[0][key]);
+                        }
+                    }
+            
+                    if(filteredX[0][year]!='' && filteredX[0][year]!=''  && !isNaN(filteredX[0][year]) &&  !isNaN(filteredY[0][year]))
+
+                        dataset.push({
+                            "x":Number(filteredX[0][year]),
+                            "y":Number(filteredY[0][year]),
+                            "region":rd['World bank region'],
+                            "abbr":rd['geo'],
+                            "country":rd['name']}); 
+                    }
+    
+            
+            })
+
+        }
+
+
+        function update(){
+            
+            var t = d3.transition()
+                .duration(100);
+
+            var circles = g.selectAll("#chart").data(dataset, function(d){
+                return d.year;
+            });
+
+            circles.exit()
+                .attr("class", "exit")
+                .remove();
+
+            circles.enter()
+                .append("circle")
+                .attr("class", "enter")
+                .style("fill", function(d) { return color(d.region); })
+                .merge(circles)
+                .transition(t)
+                    .attr("cy", function(d){ return y(d.y); })
+                    .attr("cx", function(d){ return x(d.x) })
+                    .attr("r", 12);
+        }
