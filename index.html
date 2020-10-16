@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div>
     <label for="x">Choose a X axis:</label>
         <select name="x axis" id="x" onchange="update()">
             <option value="fertility">fertility</option>
@@ -34,6 +35,7 @@
         </select>
     <label for="year">Enter a Year</label>
         <input type="number" id="year" name="year" min="1800" max="2100" value="1800" onchange="update()">
+    </div>
         
     <div id="chart"></div> 
 </body>

@@ -114,8 +114,8 @@ function drawGapMinder()
             .attr("cy", function(d) { return yScale(d.y); })
             .style("opacity", 1)
             .style("fill", function(d) { return color(d.region); });
-
-        
+            
+    
     
     }
 
@@ -277,7 +277,6 @@ function drawGapMinder()
                 .attr("cx", function(d){ return xScale(d.x) })
                 .attr("r", 12)
                 .merge(circles)
-             
                 .transition(t)
                     .style("opacity",1)
                     .attr("cy", function(d){ return yScale(d.y); })
