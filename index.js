@@ -2,6 +2,8 @@ var pop;
 var x_max;
 var y_max;
 var time =0;
+var yScale;
+var xScale;
 
 // Setting Dimensions of the canvas
 const margin = {top: 20, right: 30, bottom: 80, left: 80};
@@ -50,10 +52,10 @@ function drawGapMinder()
     console.log(y_max);
         
          //Scaling the X and Y axis 
-    let yScale = d3.scaleLinear()
+     yScale = d3.scaleLinear()
             .domain([0, y_max])
             .range([height - margin.bottom, margin.top]);
-    let xScale = d3.scaleLinear()
+     xScale = d3.scaleLinear()
             .domain([0, x_max])
             .range([margin.left, width - margin.right]);
      
@@ -110,16 +112,19 @@ function drawGapMinder()
             .attr("r", 12)
             .attr("cx", function(d) { return xScale(d.x); })
             .attr("cy", function(d) { return yScale(d.y); })
-            .style("opacity", 0.8)
+            .style("opacity", 1)
             .style("fill", function(d) { return color(d.region); });
 
-        update();
+        
     
     }
 
 
     function processing()
         {
+            g.selectAll(".xAxis").remove();
+            g.selectAll(".yAxis").remove();
+
             var year=document.getElementById('year').value;
             var xaxis=document.getElementById('x').value;
             var yaxis=document.getElementById('y').value;
@@ -186,29 +191,96 @@ function drawGapMinder()
             
             })
 
+
+                //Scaling the X and Y axis 
+                yScale = d3.scaleLinear()
+                    .domain([0, y_max])
+                    .range([height - margin.bottom, margin.top]);
+                xScale = d3.scaleLinear()
+                    .domain([0, x_max])
+                    .range([margin.left, width - margin.right]);
+
+
+                //Y Axis label
+                g.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y",margin.left-60)
+                    .attr("x",0 - (height / 2))
+                    .attr("dy", "1em")
+                    .style("font-family", "sans-serif")
+                    .style("font-size", "17px")
+                    .style("font-weight",500)
+                    .style("text-anchor", "middle")
+                    .style("fill","grey")
+                    .text("Y axis");  
+    
+                //X Axis label
+                g.append("text")             
+                    .attr("transform",
+                            "translate(" + (width/2) + " ," + (height -margin.top) + ")")
+                    .style("text-anchor", "middle")
+                    .style("font-family", "sans-serif")
+                    .style("font-size", "17px")
+                    .style("font-weight",500)
+                    .style("fill","grey")
+                    .text("X Axis");
+    
+                //X Axis
+                const xAxis = d3.axisBottom(xScale).ticks(10);
+                    g.append("g")
+                        .attr("transform", `translate(0,${height - margin.bottom})`)
+                        .style("font-family", "sans-serif")
+                        .call(xAxis)
+                        .style("stroke","grey")
+                        .attr("class","xAxis");  
+
+                //Y Axis
+                const yAxis = d3.axisLeft(yScale).ticks(10);
+                    g.append("g")
+                        .attr("transform", `translate(${margin.left},0)`)
+                        .style("font-family", "sans-serif")
+                        .call(yAxis)
+                        .style("stroke","grey")
+                        .attr("x", -30)
+                        .call(g => g.select(".domain"))
+                        .attr("class","yAxis");
+
+                
+
         }
 
 
         function update(){
-            
-            var t = d3.transition()
-                .duration(100);
 
-            var circles = g.selectAll("#chart").data(dataset, function(d){
-                return d.year;
+            processing();
+
+            var t = d3.transition()
+                .duration(1000);
+
+            var circles = g.selectAll("circle").data(dataset, function(d){
+                return d.country;
             });
+        
 
             circles.exit()
-                .attr("class", "exit")
+                .transition(t)
+                    .style("opacity",0)
                 .remove();
 
             circles.enter()
                 .append("circle")
                 .attr("class", "enter")
+                .attr("class", "dot")
                 .style("fill", function(d) { return color(d.region); })
+                .style("opacity",0)
+                .attr("cy", function(d){ return yScale(d.y); })
+                .attr("cx", function(d){ return xScale(d.x) })
+                .attr("r", 12)
                 .merge(circles)
+             
                 .transition(t)
-                    .attr("cy", function(d){ return y(d.y); })
-                    .attr("cx", function(d){ return x(d.x) })
+                    .style("opacity",1)
+                    .attr("cy", function(d){ return yScale(d.y); })
+                    .attr("cx", function(d){ return xScale(d.x) })
                     .attr("r", 12);
         }
