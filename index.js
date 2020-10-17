@@ -104,16 +104,45 @@ function drawGapMinder()
                 .call(g => g.select(".domain"))
                 .attr("class","yAxis"); 
         
-        //Scatter plot
-        g.selectAll("dot")
+
+        var gdots =  g.selectAll("g.dot")
             .data(dataset)
-            .enter().append("circle")
+            .enter().append('g');
+
+        gdots.append("circle")
             .attr("class", "dot")
-            .attr("r", 12)
-            .attr("cx", function(d) { return xScale(d.x); })
-            .attr("cy", function(d) { return yScale(d.y); })
-            .style("opacity", 1)
-            .style("fill", function(d) { return color(d.region); });
+            .attr("r", 15)
+            .attr("cx", function (d) {
+                return xScale(d.x);
+            })
+            .attr("cy", function (d) {
+                return yScale(d.y);
+            })
+            .style("fill", function (d) {
+                return color(d.region);
+            })
+            .style("opacity",1);
+
+        gdots.append("text").text(function(d){
+                return d.abbr;
+            })
+            .attr("x", function (d) {
+                return xScale(d.x-0.1);
+            })
+            .attr("y", function (d) {
+                return yScale(d.y-0.1);
+            });
+
+        //Scatter plot
+        // g.selectAll("dot")
+        //     .data(dataset)
+        //     .enter().append("circle")
+        //     .attr("class", "dot")
+        //     .attr("r", 12)
+        //     .attr("cx", function(d) { return xScale(d.x); })
+        //     .attr("cy", function(d) { return yScale(d.y); })
+        //     .style("opacity", 1)
+        //     .style("fill", function(d) { return color(d.region); });
             
     
     
@@ -275,11 +304,12 @@ function drawGapMinder()
                 .style("opacity",0)
                 .attr("cy", function(d){ return yScale(d.y); })
                 .attr("cx", function(d){ return xScale(d.x) })
-                .attr("r", 12)
+                .attr("r", 15)
                 .merge(circles)
                 .transition(t)
                     .style("opacity",1)
                     .attr("cy", function(d){ return yScale(d.y); })
                     .attr("cx", function(d){ return xScale(d.x) })
-                    .attr("r", 12);
+                    .attr("r", 15);
+            
         }
