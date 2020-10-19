@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://d3js.org/d3.v5.min.js"></script>
-    <title>Fancy-Gapminder</title>
+    <title>Fancy-Gapminder-Ashish_Santha_Kumar</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -15,6 +15,7 @@
             <option value="child_mortality">Child Mortality</option>
             <option value="life_exp">life_exp</option>
             <option value="population">population</option>
+            <option value="income">income</option>
         </select>
     <label for="y">Choose a y axis:</label>
         <select name="y axis" id="y" onchange="update()">
@@ -22,22 +23,24 @@
             <option value="child_mortality">Child Mortality</option>
             <option value="life_exp">life_exp</option>
             <option value="population">population</option>
+            <option value="income">income</option>
         </select>
     <label for="region">Choose a region:</label>
-        <select name="region" id="region" onchange="update()">
+        <select name="region" id="region" onchange="update()" >
             <option value="South Asia">South Asia</option>
             <option value="Europe & Central Asia">Europe & Central Asia</option>
             <option value="Middle East & North Africa">Middle East & North Africa</option>
             <option value="Sub-Saharan Africa">Sub-Saharan Africa</option>
             <option value="Latin America & Caribbean">Latin America & Caribbean</option>
             <option value="East Asia & Pacific">East Asia & Pacific</option>
-            <option value="all">all</option>
+            <option value="all" selected>all</option>
         </select>
     <label for="year">Enter a Year</label>
-        <input type="number" id="year" name="year" min="1800" max="2100" value="1800" onchange="update()">
+        <input type="number" id="year" name="year" min="1800" max="2020" value="1800" onchange="update()">
+        <input type='button' id="play" value="play" onclick="updateTimer()">
     </div>
         
     <div id="chart"></div> 
 </body>
-<script src="index.js"></script>
+<script src="main.js"></script>
 </html>
