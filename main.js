@@ -12,12 +12,16 @@ var xLabel;
 var yLabel;
 var button;
 var timeLabel;
-var time
+var time;
+var legend;
+var keys = ["South Asia", "Europe & Central Asia", "Middle East & North Africa", "Sub-Saharan Africa","Latin America & Caribbean", "East Asia & Pacific", "North America"];
+
+
 
 // Setting Dimensions of the canvas
 const margin = {top: 20, right: 30, bottom: 80, left: 80};
-const width = 1200 - margin.left - margin.right;
-const height = 800 - margin.top - margin.bottom;
+const width = 1000 - margin.left - margin.right;
+const height = 600 - margin.top - margin.bottom;
 
 
 
@@ -46,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 });
 
+
 function drawGapMinder()
 {
 
@@ -58,8 +63,12 @@ g = d3.select("#chart")
         .attr("transform", "translate(" + margin.left + 
             ", " + margin.top + ")");
 
-
-
+legend = d3.select("#legend").append("svg")
+    .attr("width", 275)
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("id","keySvg")
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
   update();    
 
@@ -68,7 +77,45 @@ g = d3.select("#chart")
 function update(){
 
 
+
     preprocess();
+
+
+    legend.append("text")             
+        .attr("transform",
+              "translate(" + (-margin.left+55) + " ," + (margin.top+100) + ")")
+        .style("text-align", "center")
+        .style("font-family", "sans-serif")
+        .style("font-size", "15px")
+        .style("fill","black")
+        .style("opacity",0.8)
+        .style("font-weight",700)
+        .attr("text-decoration","underline")
+        .text("Legend");
+
+    legend.selectAll("keyLegend")
+        .data(keys)
+        .enter()
+        .append("rect")
+          .attr("width", 11)
+          .attr("height", 11)
+          .attr("x", -70)
+          .attr("y", function(d,i){ return margin.top+120+ i*25})
+          .style("fill", function(d){return color(d)})
+          .style("stroke-width",2)
+          .style("stroke","black")
+          .style("alignment-baseline", "middle");
+
+        legend.selectAll("keyLabel")
+          .data(keys)
+          .enter()
+          .append("text")
+            .attr("x",-50)
+            .attr("y", function(d,i){ return margin.top+130+ i*25}) 
+            .text(function(d){ return d})
+            .attr("text-anchor", "left")
+            .style("font-family", "sans-serif")
+            .style("font-size", "11px");
 
     var t = d3.transition()
     .duration(1000);
@@ -90,6 +137,7 @@ function update(){
     .attr("class", "mapTooltip")
     .style("position", "absolute")
     .style("z-index", "10")
+    .style("color","black")
     .style("visibility", "hidden");
 
     g.selectAll('g.points')
@@ -138,6 +186,7 @@ function update(){
     .call(g => 
         g.append("text")
         .style("fill","black")
+        .style("font-weight","bold")
         .style("font-size", "8px")
         .on('mouseover', function(d,i) {
             tooltipDiv.html("country: "+d.country)
@@ -158,13 +207,13 @@ function update(){
         })
         .style("opacity", 0.0)
         .attr("y", function(d){ return yScale(d.y)+2; })
-        .attr("x", function(d){ return xScale(d.x)-5; })
+        .attr("x", function(d){ return xScale(d.x)-8; })
         .transition(t)
             .style("opacity", 1.0)
             .attr("y", function(d){ return yScale(d.y)+2; })
-            .attr("x", function(d){ return xScale(d.x)-5; })
+            .attr("x", function(d){ return xScale(d.x)-8; })
             .text(function(d){
-                return d.abbr;})
+                return d.abbr.toUpperCase();})
 
     )
     }
@@ -176,9 +225,9 @@ function update(){
             .transition(t)
             .style("opacity", 1.0)
             .attr("y", function(d){ return yScale(d.y)+2; })
-            .attr("x", function(d){ return xScale(d.x)-5; })
+            .attr("x", function(d){ return xScale(d.x)-8; })
             .text(function(d){
-                return d.abbr;})
+                return d.abbr.toUpperCase();})
     )
     .call(g => g.select('circle')
         .transition(t)
@@ -318,31 +367,31 @@ if (yData==incomeData)
 //Y Axis label
 g.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y",margin.left-120)
-    .attr("x",0 - (height / 2))
+    .attr("y",margin.left-100)
+    .attr("x",0 - (height / 2-30))
     .attr("dy", "1em")
     .style("font-family", "sans-serif")
-    .style("font-size", "17px")
-    .style("font-weight",500)
+    .style("font-size", "18px")
+    .style("font-weight",600)
     .style("text-anchor", "middle")
-    .style("fill","grey")
+    .style("fill","black")
     .attr("class","yLabel")
     .text(yLabel);  
 
 //X Axis label
 g.append("text")             
     .attr("transform",
-            "translate(" + (width/2) + " ," + (height -margin.top) + ")")
+            "translate(" + (width/2+50) + " ," + (height -margin.top) + ")")
     .style("text-anchor", "middle")
     .style("font-family", "sans-serif")
-    .style("font-size", "17px")
-    .style("font-weight",500)
-    .style("fill","grey")
+    .style("font-size", "18px")
+    .style("font-weight",600)
+    .style("fill","black")
     .attr("class","xLabel")
     .text(xLabel);
 
 //X Axis
-const xAxis = d3.axisBottom(xScale).ticks(10);
+const xAxis = d3.axisBottom(xScale).ticks(11);
     g.append("g")
         .attr("transform", `translate(0,${height - margin.bottom})`)
         .style("font-family", "sans-serif")
