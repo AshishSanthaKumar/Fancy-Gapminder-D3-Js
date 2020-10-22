@@ -21,7 +21,7 @@ var keys = ["South Asia", "Europe & Central Asia", "Middle East & North Africa",
 // Setting Dimensions of the canvas
 const margin = {top: 20, right: 30, bottom: 80, left: 80};
 const width = 1000 - margin.left - margin.right;
-const height = 600 - margin.top - margin.bottom;
+const height = 700 - margin.top - margin.bottom;
 
 
 
@@ -64,8 +64,8 @@ g = d3.select("#chart")
             ", " + margin.top + ")");
 
 legend = d3.select("#legend").append("svg")
-    .attr("width", 275)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", 180)
+    .attr("height", 380)
     .attr("id","keySvg")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -74,12 +74,12 @@ legend = d3.select("#legend").append("svg")
 
 }
 
+//Updating data for each change after the first render
 function update(){
-
-
 
     preprocess();
 
+    //Legend 
 
     legend.append("text")             
         .attr("transform",
@@ -117,8 +117,12 @@ function update(){
             .style("font-family", "sans-serif")
             .style("font-size", "11px");
 
+    //Setting the transition time as 1 second
+
     var t = d3.transition()
     .duration(1000);
+
+    //The Year label at the bottom right
 
     labeltext = Number(document.getElementById("year").value);
 
@@ -132,6 +136,8 @@ function update(){
     .attr("class","labeltext")
     .text(labeltext);
 
+    //Too
+
     var tooltipDiv = d3.select("body")
     .append("div")
     .attr("class", "mapTooltip")
@@ -143,12 +149,12 @@ function update(){
     g.selectAll('g.points')
         .data(dataset, function(d){return d.abbr;})
         .join(
-          enter => enterRects(enter, t,tooltipDiv),
-          update => updateRects(update, t,tooltipDiv),
-          exit => exitRects(exit, t,tooltipDiv)
+          enter => enterCircle(enter, t,tooltipDiv),
+          update => updateCircle(update, t,tooltipDiv),
+          exit => exitCircle(exit, t,tooltipDiv)
         )
     
-    function enterRects(enter, t,tooltipDiv) {
+    function enterCircle(enter, t,tooltipDiv) {
 
     enter.append('g')
     .attr("class","points")
@@ -157,14 +163,14 @@ function update(){
         .attr("fill", function(d) { return color(d.region); })
         .style("stroke", "black")
         .on('mouseover', function(d,i) {
-            tooltipDiv.html("country: "+d.country)
+            tooltipDiv.html("Country: "+d.country)
             .style("left", (d3.event.pageX + 10) + "px")
             .style("top", (d3.event.pageY - 15) + "px")
             .style("visibility", "visible")
             .attr("data-html", "true");
         })
         .on('mousemove',function(d,i) {
-            tooltipDiv.html("country: "+d.country)
+            tooltipDiv.html("Country: "+d.country)
             .style("left", (d3.event.pageX + 10) + "px")
             .style("top", (d3.event.pageY - 15) + "px")
             .style("visibility", "visible")
@@ -189,14 +195,14 @@ function update(){
         .style("font-weight","bold")
         .style("font-size", "8px")
         .on('mouseover', function(d,i) {
-            tooltipDiv.html("country: "+d.country)
+            tooltipDiv.html("Country: "+d.country)
             .style("left", (d3.event.pageX + 10) + "px")
             .style("top", (d3.event.pageY - 15) + "px")
             .style("visibility", "visible")
             .attr("data-html", "true");
         })
         .on('mousemove',function(d,i) {
-            tooltipDiv.html("country: "+d.country)
+            tooltipDiv.html("Country: "+d.country)
             .style("left", (d3.event.pageX + 10) + "px")
             .style("top", (d3.event.pageY - 15) + "px")
             .style("visibility", "visible")
@@ -218,7 +224,7 @@ function update(){
     )
     }
 
-    function updateRects(update, t,tooltipDiv) {
+    function updateCircle(update, t,tooltipDiv) {
 
     update
     .call(g => g.select('text')
@@ -239,7 +245,7 @@ function update(){
     )
     }
 
-    function exitRects(exit, t,tooltipDiv) {
+    function exitCircle(exit, t,tooltipDiv) {
 
     exit
     .call(g =>
@@ -250,7 +256,7 @@ function update(){
     }
 
 
-    }
+}
 
 function preprocess(){
             g.selectAll(".xAxis").remove();
@@ -332,85 +338,86 @@ function preprocess(){
             scaling();
 }
 
-
+ //Scaling the X and Y axis 
 function scaling(){
-    //Scaling the X and Y axis 
-yScale = d3.scaleLinear()
-    .domain([0, y_max])
-    .range([height - margin.bottom, margin.top]);
-xScale = d3.scaleLinear()
-    .domain([0, x_max])
-    .range([margin.left, width - margin.right]);
+   
+    yScale = d3.scaleLinear()
+        .domain([0, y_max])
+        .range([height - margin.bottom, margin.top]);
+    xScale = d3.scaleLinear()
+        .domain([0, x_max])
+        .range([margin.left, width - margin.right]);
 
-if (xData==fertilitydata)
-    xLabel="Total Fertility rate (No of Children)";
-if (xData==child_mortality)
-    xLabel="Child Mortality (Deaths per 1000 born)";
-if (xData==life_exp_data)
-    xLabel="Life Expectancy (in Years)";
-if (xData==pop_data)
-    xLabel="Total Population";
-if (xData==incomeData)
-    xLabel="Income Per Person";     
-    
-if (yData==fertilitydata)
-    yLabel="Total Fertility rate (No of Children)";
-if (yData==child_mortality)
-    yLabel="Child Mortality (Deaths per 1000 born)";
-if (yData==life_exp_data)
-    yLabel="Life Expectancy (in Years)";
-if (yData==pop_data)
-    yLabel="Total Population";
-if (yData==incomeData)
-    yLabel="Income Per Person";  
+    if (xData==fertilitydata)
+        xLabel="Total Fertility rate (No of Children)";
+    if (xData==child_mortality)
+        xLabel="Child Mortality (Deaths per 1000 born)";
+    if (xData==life_exp_data)
+        xLabel="Life Expectancy (in Years)";
+    if (xData==pop_data)
+        xLabel="Total Population";
+    if (xData==incomeData)
+        xLabel="Income Per Person";     
+        
+    if (yData==fertilitydata)
+        yLabel="Total Fertility rate (No of Children)";
+    if (yData==child_mortality)
+        yLabel="Child Mortality (Deaths per 1000 born)";
+    if (yData==life_exp_data)
+        yLabel="Life Expectancy (in Years)";
+    if (yData==pop_data)
+        yLabel="Total Population";
+    if (yData==incomeData)
+        yLabel="Income Per Person";  
 
-//Y Axis label
-g.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y",margin.left-100)
-    .attr("x",0 - (height / 2-30))
-    .attr("dy", "1em")
-    .style("font-family", "sans-serif")
-    .style("font-size", "18px")
-    .style("font-weight",600)
-    .style("text-anchor", "middle")
-    .style("fill","black")
-    .attr("class","yLabel")
-    .text(yLabel);  
-
-//X Axis label
-g.append("text")             
-    .attr("transform",
-            "translate(" + (width/2+50) + " ," + (height -margin.top) + ")")
-    .style("text-anchor", "middle")
-    .style("font-family", "sans-serif")
-    .style("font-size", "18px")
-    .style("font-weight",600)
-    .style("fill","black")
-    .attr("class","xLabel")
-    .text(xLabel);
-
-//X Axis
-const xAxis = d3.axisBottom(xScale).ticks(11);
-    g.append("g")
-        .attr("transform", `translate(0,${height - margin.bottom})`)
+    //Y Axis label
+    g.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y",margin.left-100)
+        .attr("x",0 - (height / 2-30))
+        .attr("dy", "1em")
         .style("font-family", "sans-serif")
-        .call(xAxis)
-        .style("stroke","grey")
-        .attr("class","xAxis");  
+        .style("font-size", "18px")
+        .style("font-weight",600)
+        .style("text-anchor", "middle")
+        .style("fill","black")
+        .attr("class","yLabel")
+        .text(yLabel);  
 
-//Y Axis
-const yAxis = d3.axisLeft(yScale).ticks(10);
-    g.append("g")
-        .attr("transform", `translate(${margin.left},0)`)
+    //X Axis label
+    g.append("text")             
+        .attr("transform",
+                "translate(" + (width/2+50) + " ," + (height -margin.top) + ")")
+        .style("text-anchor", "middle")
         .style("font-family", "sans-serif")
-        .call(yAxis)
-        .style("stroke","grey")
-        .attr("x", -30)
-        .call(g => g.select(".domain"))
-        .attr("class","yAxis");
+        .style("font-size", "18px")
+        .style("font-weight",600)
+        .style("fill","black")
+        .attr("class","xLabel")
+        .text(xLabel);
+
+    //X Axis
+    const xAxis = d3.axisBottom(xScale).ticks(11);
+        g.append("g")
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .style("font-family", "sans-serif")
+            .call(xAxis)
+            .style("stroke","grey")
+            .attr("class","xAxis");  
+
+    //Y Axis
+    const yAxis = d3.axisLeft(yScale).ticks(10);
+        g.append("g")
+            .attr("transform", `translate(${margin.left},0)`)
+            .style("font-family", "sans-serif")
+            .call(yAxis)
+            .style("stroke","grey")
+            .attr("x", -30)
+            .call(g => g.select(".domain"))
+            .attr("class","yAxis");
 }
 
+//Play Pause Functionality
 function updateTimer()
     {
         
@@ -424,11 +431,11 @@ function updateTimer()
             }
     }
 
-    function step() {
+function step() {
         var years=Number(document.getElementById("year").value);
         if(years==2020)
             years=1799;
         years=years+1;
         document.getElementById("year").value=years;
         update();
-        }
+    }
