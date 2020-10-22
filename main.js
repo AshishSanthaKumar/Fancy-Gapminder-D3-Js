@@ -434,8 +434,13 @@ function updateTimer()
 function step() {
         var years=Number(document.getElementById("year").value);
         if(years==2020)
-            years=1799;
+        {
+            clearInterval(timer);
+            document.getElementById("play").value="Play";
+        }
+        else{
         years=years+1;
         document.getElementById("year").value=years;
         update();
+        }
     }
