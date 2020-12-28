@@ -31,12 +31,12 @@ var color = d3.scaleOrdinal(d3.schemeSet3);
 // data
 document.addEventListener('DOMContentLoaded', function() {
     
-    Promise.all([d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/data/population_total.csv'),
-                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/data/life_expectancy_years.csv'),
-                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/data/child_mortality_0_5_year_olds_dying_per_1000_born.csv'),
-                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/data/countries_regions.csv'),
-                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/data/children_per_woman_total_fertility.csv'),
-                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/data/income_per_person_gdppercapita.csv')])
+    Promise.all([d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/public/data/population_total.csv'),
+                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/public/data/life_expectancy_years.csv'),
+                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/public/data/child_mortality_0_5_year_olds_dying_per_1000_born.csv'),
+                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/public/data/countries_regions.csv'),
+                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/public/data/children_per_woman_total_fertility.csv'),
+                d3.csv('https://raw.githubusercontent.com/AshishSanthaKumar/Fancy-Gapminder-D3-Js/master/public/data/income_per_person_gdppercapita.csv')])
     .then(function(values){
     
         pop_data = values[0];
